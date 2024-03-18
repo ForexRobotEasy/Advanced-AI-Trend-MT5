@@ -1,0 +1,101 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                   Advanced AI Trend MT5         |
+//|                                  Developer - Forex Robot Easy Team|
+//|                                  Developer's Site - forexroboteasy.com|
+//+------------------------------------------------------------------+
+
+// Define input parameters
+
+input double LotSize = 0.01; // Lot size for each trade
+input double TakeProfit = 100; // Take profit distance in pips
+input double StopLoss = 50; // Stop loss distance in pips
+
+// Define global variables
+
+int ticket = 0; // Ticket number of the current trade
+double entryPrice = 0; // Price at which the trade was entered
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Initialization tasks
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Expert tick function                                             |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Check if there is an open trade
+    if (ticket != 0)
+    {
+        // Check if the trade reached the take profit level
+        if (entryPrice + TakeProfit * _Point <= Ask)
+        {
+            // Close the trade at take profit
+            CloseTrade(ticket);
+        }
+        // Check if the trade reached the stop loss level
+        else if (entryPrice - StopLoss * _Point >= Ask)
+        {
+            // Close the trade at stop loss
+            CloseTrade(ticket);
+        }
+    }
+    else
+    {
+        // Check for entry conditions
+
+        // Implement AI-based entry point identification
+
+        // Implement safe entry point identification during calm periods
+
+        // Open a new trade if conditions are met
+        if (CanOpenTrade())
+        {
+            OpenTrade();
+        }
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Function to open a new trade                                      |
+//+------------------------------------------------------------------+
+void OpenTrade()
+{
+    // Calculate lot size based on account balance and risk management rules
+    double calculatedLotSize = AccountBalance() * 0.01;
+
+    // Check if calculated lot size is greater than minimum allowed
+    if (calculatedLotSize > MarketInfo(Symbol(), MODE_MINLOT))
+    {
+        // Open a buy trade
+        ticket = OrderSend(Symbol(), OP_BUY, calculatedLotSize, Ask, 0, 0, 0, 'Advanced AI Trend MT5', 0, 0, Green);
+        entryPrice = Ask;
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Function to close an open trade                                   |
+//+------------------------------------------------------------------+
+void CloseTrade(int tradeTicket)
+{
+    // Close the trade
+    OrderClose(tradeTicket, OrderLots(), Bid, 0, Red);
+    ticket = 0;
+}
+
+//+------------------------------------------------------------------+
+//| Function to check if a new trade can be opened                    |
+//+------------------------------------------------------------------+
+bool CanOpenTrade()
+{
+    // Implement long-term growth focus code
+
+    return true; // Placeholder condition, replace with actual condition
+}
